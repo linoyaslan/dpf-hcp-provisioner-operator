@@ -131,7 +131,7 @@ spec:
               pullSecretRef:
                 description: |-
                   PullSecretRef is a reference to a Secret containing the container registry pull secret
-                  Secret must be in the same namespace as the DPFHCPBridge CR and contain key 'pullsecret'
+                  Secret must be in the same namespace as the DPFHCPBridge CR and contain key '.dockerconfigjson'
                   This field is immutable.
                 properties:
                   name:
@@ -151,7 +151,7 @@ spec:
               sshKeySecretRef:
                 description: |-
                   SSHKeySecretRef is a reference to a Secret containing the SSH public key for cluster node access
-                  Secret must be in the same namespace as the DPFHCPBridge CR and contain key 'ssh-publickey'
+                  Secret must be in the same namespace as the DPFHCPBridge CR and contain key 'id_rsa.pub'
                   This field is immutable.
                 properties:
                   name:

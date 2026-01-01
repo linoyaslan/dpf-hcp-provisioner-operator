@@ -56,11 +56,12 @@ rules:
   - create
   - patch
 
-# ConfigMap read permissions (for BlueField image mapping)
+# ConfigMap and Secret read permissions (for BlueField image mapping and secret validation)
 - apiGroups:
   - ""
   resources:
   - configmaps
+  - secrets
   verbs:
   - get
   - list

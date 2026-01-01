@@ -66,7 +66,7 @@ type DPFHCPBridgeSpec struct {
 	OCPReleaseImage string `json:"ocpReleaseImage"`
 
 	// SSHKeySecretRef is a reference to a Secret containing the SSH public key for cluster node access
-	// Secret must be in the same namespace as the DPFHCPBridge CR and contain key 'ssh-publickey'
+	// Secret must be in the same namespace as the DPFHCPBridge CR and contain key 'id_rsa.pub'
 	// This field is immutable.
 	// +kubebuilder:validation:Required
 	// +kubebuilder:validation:XValidation:rule="self == oldSelf",message="sshKeySecretRef is immutable"
@@ -75,7 +75,7 @@ type DPFHCPBridgeSpec struct {
 	SSHKeySecretRef corev1.LocalObjectReference `json:"sshKeySecretRef"`
 
 	// PullSecretRef is a reference to a Secret containing the container registry pull secret
-	// Secret must be in the same namespace as the DPFHCPBridge CR and contain key 'pullsecret'
+	// Secret must be in the same namespace as the DPFHCPBridge CR and contain key '.dockerconfigjson'
 	// This field is immutable.
 	// +kubebuilder:validation:Required
 	// +kubebuilder:validation:XValidation:rule="self == oldSelf",message="pullSecretRef is immutable"

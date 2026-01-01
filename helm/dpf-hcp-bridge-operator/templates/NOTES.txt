@@ -93,8 +93,8 @@ TROUBLESHOOTING:
 - Common issues:
   * Missing BlueField image mapping: Add to ocp-bluefield-images ConfigMap
   * DPUCluster not found: Ensure DPUCluster CR exists and is referenced correctly
-  * Pull secret missing: Create secret with 'pullsecret' key in CR namespace
-  * SSH key missing: Create secret with 'ssh-publickey' key in CR namespace
+  * Pull secret missing: Create secret with '.dockerconfigjson' key in CR namespace
+  * SSH key missing: Create secret with 'id_rsa.pub' key in CR namespace
 
 For more information:
 - Documentation: https://github.com/rh-ecosystem-edge/dpf-hcp-bridge-operator

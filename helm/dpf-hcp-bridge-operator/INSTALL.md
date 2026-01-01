@@ -114,12 +114,12 @@ oc create namespace my-dpu-clusters
 
 # Create pull secret
 oc create secret generic my-pull-secret \
-  --from-file=pullsecret=$HOME/.docker/config.json \
+  --from-file=.dockerconfigjson=$HOME/.docker/config.json \
   -n my-dpu-clusters
 
 # Create SSH public key secret
 oc create secret generic my-ssh-key \
-  --from-file=ssh-publickey=$HOME/.ssh/id_rsa.pub \
+  --from-file=id_rsa.pub=$HOME/.ssh/id_rsa.pub \
   -n my-dpu-clusters
 ```
 
