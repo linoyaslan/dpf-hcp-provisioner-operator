@@ -42,6 +42,7 @@ import (
 	"github.com/rh-ecosystem-edge/dpf-hcp-bridge-operator/internal/controller"
 	"github.com/rh-ecosystem-edge/dpf-hcp-bridge-operator/internal/controller/bluefield"
 	"github.com/rh-ecosystem-edge/dpf-hcp-bridge-operator/internal/controller/dpucluster"
+	"github.com/rh-ecosystem-edge/dpf-hcp-bridge-operator/internal/controller/secrets"
 	// +kubebuilder:scaffold:imports
 )
 
@@ -212,12 +213,16 @@ func main() {
 	// Initialize DPUCluster Validator
 	dpuClusterValidator := dpucluster.NewValidator(mgr.GetClient(), mgr.GetEventRecorderFor("dpfhcpbridge-controller"))
 
+	// Initialize Secrets Validator
+	secretsValidator := secrets.NewValidator(mgr.GetClient(), mgr.GetEventRecorderFor("dpfhcpbridge-controller"))
+
 	if err := (&controller.DPFHCPBridgeReconciler{
 		Client:              mgr.GetClient(),
 		Scheme:              mgr.GetScheme(),
 		Recorder:            mgr.GetEventRecorderFor("dpfhcpbridge-controller"),
 		ImageResolver:       imageResolver,
 		DPUClusterValidator: dpuClusterValidator,
+		SecretsValidator:    secretsValidator,
 	}).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "DPFHCPBridge")
 		os.Exit(1)

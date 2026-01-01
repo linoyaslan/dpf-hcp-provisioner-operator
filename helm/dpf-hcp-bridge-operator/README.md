@@ -251,12 +251,12 @@ Before creating a DPFHCPBridge CR, create the required secrets:
 ```bash
 # Create pull secret
 kubectl create secret generic my-pull-secret \
-  --from-file=pullsecret=/path/to/pull-secret.json \
+  --from-file=.dockerconfigjson=/path/to/pull-secret.json \
   -n default
 
 # Create SSH key secret
 kubectl create secret generic my-ssh-key \
-  --from-file=ssh-publickey=/path/to/id_rsa.pub \
+  --from-file=id_rsa.pub=/path/to/id_rsa.pub \
   -n default
 ```
 

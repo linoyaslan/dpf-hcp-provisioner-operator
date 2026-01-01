@@ -26,12 +26,12 @@ spec:
   ocpReleaseImage: quay.io/openshift-release-dev/ocp-release:4.19.0-ec.5-x86_64
 
   # Pull secret reference (must exist in same namespace as this CR)
-  # Secret must contain key 'pullsecret' with container registry credentials
+  # Secret must contain key '.dockerconfigjson' with container registry credentials
   pullSecretRef:
     name: my-pull-secret
 
   # SSH public key reference (must exist in same namespace as this CR)
-  # Secret must contain key 'ssh-publickey' with SSH public key
+  # Secret must contain key 'id_rsa.pub' with SSH public key
   sshKeySecretRef:
     name: my-ssh-key
 
