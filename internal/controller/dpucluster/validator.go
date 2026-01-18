@@ -343,9 +343,6 @@ func (v *Validator) handleDPUClusterMissing(ctx context.Context, cr *provisionin
 	// Get previous condition to determine if this is a new error
 	previousCondition := meta.FindStatusCondition(cr.Status.Conditions, DPUClusterMissingConditionType)
 
-	// Update status
-	cr.Status.DPUClusterMissing = true
-
 	// Determine message based on whether cluster was previously found
 	var message string
 	var reason string
@@ -399,9 +396,6 @@ func (v *Validator) handleDPUClusterAccessDenied(ctx context.Context, cr *provis
 	// Get previous condition
 	previousCondition := meta.FindStatusCondition(cr.Status.Conditions, DPUClusterMissingConditionType)
 
-	// Update status
-	cr.Status.DPUClusterMissing = true
-
 	message := fmt.Sprintf("Operator lacks RBAC permissions to access DPUCluster '%s' in namespace '%s': %v",
 		dpuClusterRef.Name, dpuClusterRef.Namespace, err)
 
@@ -440,9 +434,6 @@ func (v *Validator) handleDPUClusterFound(ctx context.Context, cr *provisioningv
 
 	// Get previous condition
 	previousCondition := meta.FindStatusCondition(cr.Status.Conditions, DPUClusterMissingConditionType)
-
-	// Update status
-	cr.Status.DPUClusterMissing = false
 
 	if previousCondition != nil && previousCondition.Status == metav1.ConditionTrue {
 		log.Info("DPUCluster recovered from missing state")

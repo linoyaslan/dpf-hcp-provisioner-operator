@@ -243,7 +243,7 @@ func (r *ImageResolver) updateStatusOnSuccess(ctx context.Context, cr *provision
 	previousCondition := meta.FindStatusCondition(cr.Status.Conditions, conditionTypeBlueFieldImageResolved)
 
 	// Update status field
-	cr.Status.BlueFieldContainerImageAvailable = blueFieldImage
+	cr.Status.BlueFieldContainerImage = blueFieldImage
 
 	// Update condition
 	condition := metav1.Condition{
@@ -286,7 +286,7 @@ func (r *ImageResolver) handleValidationError(ctx context.Context, cr *provision
 	previousCondition := meta.FindStatusCondition(cr.Status.Conditions, conditionTypeBlueFieldImageResolved)
 
 	// Clear status field
-	cr.Status.BlueFieldContainerImageAvailable = ""
+	cr.Status.BlueFieldContainerImage = ""
 
 	// Determine reason and message based on error type
 	var reason, message string
@@ -333,7 +333,7 @@ func (r *ImageResolver) handlePermanentError(ctx context.Context, cr *provisioni
 	previousCondition := meta.FindStatusCondition(cr.Status.Conditions, conditionTypeBlueFieldImageResolved)
 
 	// Clear status field
-	cr.Status.BlueFieldContainerImageAvailable = ""
+	cr.Status.BlueFieldContainerImage = ""
 
 	// Determine reason based on error type
 	var reason, message string
