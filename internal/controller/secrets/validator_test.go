@@ -120,7 +120,7 @@ var _ = Describe("Secrets Validator", func() {
 				Expect(fakeClient.Get(ctx, client.ObjectKeyFromObject(bridge), &updatedBridge)).To(Succeed())
 
 				// Verify condition
-				condition := meta.FindStatusCondition(updatedBridge.Status.Conditions, SecretsValidConditionType)
+				condition := meta.FindStatusCondition(updatedBridge.Status.Conditions, provisioningv1alpha1.SecretsValid)
 				Expect(condition).ToNot(BeNil())
 				Expect(condition.Status).To(Equal(metav1.ConditionTrue))
 				Expect(condition.Reason).To(Equal(ReasonSecretsValid))
@@ -239,7 +239,7 @@ var _ = Describe("Secrets Validator", func() {
 				Expect(fakeClient.Get(ctx, client.ObjectKeyFromObject(bridge), &updatedBridge)).To(Succeed())
 
 				// Verify condition
-				condition := meta.FindStatusCondition(updatedBridge.Status.Conditions, SecretsValidConditionType)
+				condition := meta.FindStatusCondition(updatedBridge.Status.Conditions, provisioningv1alpha1.SecretsValid)
 				Expect(condition).ToNot(BeNil())
 				Expect(condition.Status).To(Equal(metav1.ConditionFalse))
 				Expect(condition.Reason).To(Equal(ReasonSSHKeySecretMissing))
@@ -310,7 +310,7 @@ var _ = Describe("Secrets Validator", func() {
 				Expect(fakeClient.Get(ctx, client.ObjectKeyFromObject(bridge), &updatedBridge)).To(Succeed())
 
 				// Verify condition
-				condition := meta.FindStatusCondition(updatedBridge.Status.Conditions, SecretsValidConditionType)
+				condition := meta.FindStatusCondition(updatedBridge.Status.Conditions, provisioningv1alpha1.SecretsValid)
 				Expect(condition).ToNot(BeNil())
 				Expect(condition.Status).To(Equal(metav1.ConditionFalse))
 				Expect(condition.Reason).To(Equal(ReasonSSHKeySecretInvalid))
@@ -370,7 +370,7 @@ var _ = Describe("Secrets Validator", func() {
 				Expect(fakeClient.Get(ctx, client.ObjectKeyFromObject(bridge), &updatedBridge)).To(Succeed())
 
 				// Verify condition
-				condition := meta.FindStatusCondition(updatedBridge.Status.Conditions, SecretsValidConditionType)
+				condition := meta.FindStatusCondition(updatedBridge.Status.Conditions, provisioningv1alpha1.SecretsValid)
 				Expect(condition).ToNot(BeNil())
 				Expect(condition.Status).To(Equal(metav1.ConditionFalse))
 				Expect(condition.Reason).To(Equal(ReasonPullSecretMissing))
@@ -441,7 +441,7 @@ var _ = Describe("Secrets Validator", func() {
 				Expect(fakeClient.Get(ctx, client.ObjectKeyFromObject(bridge), &updatedBridge)).To(Succeed())
 
 				// Verify condition
-				condition := meta.FindStatusCondition(updatedBridge.Status.Conditions, SecretsValidConditionType)
+				condition := meta.FindStatusCondition(updatedBridge.Status.Conditions, provisioningv1alpha1.SecretsValid)
 				Expect(condition).ToNot(BeNil())
 				Expect(condition.Status).To(Equal(metav1.ConditionFalse))
 				Expect(condition.Reason).To(Equal(ReasonPullSecretInvalid))
@@ -530,7 +530,7 @@ var _ = Describe("Secrets Validator", func() {
 					Status: provisioningv1alpha1.DPFHCPBridgeStatus{
 						Conditions: []metav1.Condition{
 							{
-								Type:               SecretsValidConditionType,
+								Type:               provisioningv1alpha1.SecretsValid,
 								Status:             metav1.ConditionFalse,
 								Reason:             ReasonSSHKeySecretMissing,
 								Message:            "SSH key secret not found",
@@ -557,7 +557,7 @@ var _ = Describe("Secrets Validator", func() {
 				var updatedBridge provisioningv1alpha1.DPFHCPBridge
 				Expect(fakeClient.Get(ctx, client.ObjectKeyFromObject(bridge), &updatedBridge)).To(Succeed())
 
-				condition := meta.FindStatusCondition(updatedBridge.Status.Conditions, SecretsValidConditionType)
+				condition := meta.FindStatusCondition(updatedBridge.Status.Conditions, provisioningv1alpha1.SecretsValid)
 				Expect(condition).ToNot(BeNil())
 				Expect(condition.Status).To(Equal(metav1.ConditionTrue))
 				Expect(condition.Reason).To(Equal(ReasonSecretsValid))
@@ -603,7 +603,7 @@ var _ = Describe("Secrets Validator", func() {
 					Status: provisioningv1alpha1.DPFHCPBridgeStatus{
 						Conditions: []metav1.Condition{
 							{
-								Type:               SecretsValidConditionType,
+								Type:               provisioningv1alpha1.SecretsValid,
 								Status:             metav1.ConditionFalse,
 								Reason:             ReasonPullSecretInvalid,
 								Message:            "Pull secret is missing required key",
@@ -630,7 +630,7 @@ var _ = Describe("Secrets Validator", func() {
 				var updatedBridge provisioningv1alpha1.DPFHCPBridge
 				Expect(fakeClient.Get(ctx, client.ObjectKeyFromObject(bridge), &updatedBridge)).To(Succeed())
 
-				condition := meta.FindStatusCondition(updatedBridge.Status.Conditions, SecretsValidConditionType)
+				condition := meta.FindStatusCondition(updatedBridge.Status.Conditions, provisioningv1alpha1.SecretsValid)
 				Expect(condition).ToNot(BeNil())
 				Expect(condition.Status).To(Equal(metav1.ConditionTrue))
 				Expect(condition.Reason).To(Equal(ReasonSecretsValid))
