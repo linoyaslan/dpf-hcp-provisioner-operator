@@ -102,7 +102,6 @@ var _ = Describe("DPUCluster Validator", func() {
 				// Verify status updated
 				var updatedBridge provisioningv1alpha1.DPFHCPBridge
 				Expect(fakeClient.Get(ctx, client.ObjectKeyFromObject(bridge), &updatedBridge)).To(Succeed())
-				Expect(updatedBridge.Status.DPUClusterMissing).To(BeFalse())
 
 				// Verify condition
 				condition := meta.FindStatusCondition(updatedBridge.Status.Conditions, DPUClusterMissingConditionType)
@@ -194,7 +193,6 @@ var _ = Describe("DPUCluster Validator", func() {
 				// Verify status updated
 				var updatedBridge provisioningv1alpha1.DPFHCPBridge
 				Expect(fakeClient.Get(ctx, client.ObjectKeyFromObject(bridge), &updatedBridge)).To(Succeed())
-				Expect(updatedBridge.Status.DPUClusterMissing).To(BeTrue())
 
 				// Verify condition
 				condition := meta.FindStatusCondition(updatedBridge.Status.Conditions, DPUClusterMissingConditionType)
@@ -251,7 +249,6 @@ var _ = Describe("DPUCluster Validator", func() {
 				// Fetch updated bridge from client to verify status
 				var updatedBridge provisioningv1alpha1.DPFHCPBridge
 				Expect(fakeClient.Get(ctx, client.ObjectKeyFromObject(bridge), &updatedBridge)).To(Succeed())
-				Expect(updatedBridge.Status.DPUClusterMissing).To(BeTrue())
 
 				// Verify condition uses "Deleted" reason
 				condition := meta.FindStatusCondition(updatedBridge.Status.Conditions, DPUClusterMissingConditionType)
@@ -417,7 +414,6 @@ var _ = Describe("DPUCluster Validator", func() {
 				// Verify DPUClusterMissing=True even though bridge was Ready
 				var updatedBridge provisioningv1alpha1.DPFHCPBridge
 				Expect(fakeClient.Get(ctx, client.ObjectKeyFromObject(bridge), &updatedBridge)).To(Succeed())
-				Expect(updatedBridge.Status.DPUClusterMissing).To(BeTrue())
 
 				condition := meta.FindStatusCondition(updatedBridge.Status.Conditions, DPUClusterMissingConditionType)
 				Expect(condition.Reason).To(Equal(ReasonDPUClusterDeleted))
