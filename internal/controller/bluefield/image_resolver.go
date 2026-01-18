@@ -39,9 +39,6 @@ const (
 	configMapName      = "ocp-bluefield-images"
 	configMapNamespace = "dpf-hcp-bridge-system"
 
-	// Condition type
-	conditionTypeBlueFieldImageResolved = "BlueFieldImageResolved"
-
 	// Reason codes
 	reasonImageResolved            = "ImageResolved"
 	reasonConfigMapNotFound        = "ConfigMapNotFound"
@@ -240,14 +237,14 @@ func (r *ImageResolver) updateStatusOnSuccess(ctx context.Context, cr *provision
 	log := log.FromContext(ctx)
 
 	// Get previous condition to check if we need to emit event
-	previousCondition := meta.FindStatusCondition(cr.Status.Conditions, conditionTypeBlueFieldImageResolved)
+	previousCondition := meta.FindStatusCondition(cr.Status.Conditions, provisioningv1alpha1.BlueFieldImageResolved)
 
 	// Update status field
 	cr.Status.BlueFieldContainerImage = blueFieldImage
 
 	// Update condition
 	condition := metav1.Condition{
-		Type:               conditionTypeBlueFieldImageResolved,
+		Type:               provisioningv1alpha1.BlueFieldImageResolved,
 		Status:             metav1.ConditionTrue,
 		Reason:             reasonImageResolved,
 		Message:            fmt.Sprintf("BlueField container image resolved: %s", blueFieldImage),
@@ -283,7 +280,7 @@ func (r *ImageResolver) handleValidationError(ctx context.Context, cr *provision
 	log.V(1).Info("Validation error - check CR spec", "error", err.Error())
 
 	// Get previous condition
-	previousCondition := meta.FindStatusCondition(cr.Status.Conditions, conditionTypeBlueFieldImageResolved)
+	previousCondition := meta.FindStatusCondition(cr.Status.Conditions, provisioningv1alpha1.BlueFieldImageResolved)
 
 	// Clear status field
 	cr.Status.BlueFieldContainerImage = ""
@@ -301,7 +298,7 @@ func (r *ImageResolver) handleValidationError(ctx context.Context, cr *provision
 
 	// Update condition
 	condition := metav1.Condition{
-		Type:               conditionTypeBlueFieldImageResolved,
+		Type:               provisioningv1alpha1.BlueFieldImageResolved,
 		Status:             metav1.ConditionFalse,
 		Reason:             reason,
 		Message:            message,
@@ -330,7 +327,7 @@ func (r *ImageResolver) handlePermanentError(ctx context.Context, cr *provisioni
 	log.V(1).Info("Permanent error - user action required", "version", version, "error", err.Error())
 
 	// Get previous condition
-	previousCondition := meta.FindStatusCondition(cr.Status.Conditions, conditionTypeBlueFieldImageResolved)
+	previousCondition := meta.FindStatusCondition(cr.Status.Conditions, provisioningv1alpha1.BlueFieldImageResolved)
 
 	// Clear status field
 	cr.Status.BlueFieldContainerImage = ""
@@ -354,7 +351,7 @@ func (r *ImageResolver) handlePermanentError(ctx context.Context, cr *provisioni
 
 	// Update condition
 	condition := metav1.Condition{
-		Type:               conditionTypeBlueFieldImageResolved,
+		Type:               provisioningv1alpha1.BlueFieldImageResolved,
 		Status:             metav1.ConditionFalse,
 		Reason:             reason,
 		Message:            message,
@@ -382,7 +379,7 @@ func (r *ImageResolver) handleTransientError(ctx context.Context, cr *provisioni
 	log := log.FromContext(ctx)
 
 	// Get previous condition
-	previousCondition := meta.FindStatusCondition(cr.Status.Conditions, conditionTypeBlueFieldImageResolved)
+	previousCondition := meta.FindStatusCondition(cr.Status.Conditions, provisioningv1alpha1.BlueFieldImageResolved)
 
 	// Determine reason based on error type
 	var reason, message string
@@ -398,7 +395,7 @@ func (r *ImageResolver) handleTransientError(ctx context.Context, cr *provisioni
 	// Update condition only on first occurrence or if reason changed
 	if previousCondition == nil || previousCondition.Reason != reason {
 		condition := metav1.Condition{
-			Type:               conditionTypeBlueFieldImageResolved,
+			Type:               provisioningv1alpha1.BlueFieldImageResolved,
 			Status:             metav1.ConditionFalse,
 			Reason:             reason,
 			Message:            message,

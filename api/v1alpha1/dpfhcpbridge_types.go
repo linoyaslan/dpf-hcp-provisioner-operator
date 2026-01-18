@@ -177,6 +177,23 @@ const (
 
 	// HostedClusterCleanup indicates the status of HostedCluster deletion during finalizer cleanup.
 	HostedClusterCleanup string = "HostedClusterCleanup"
+
+	// Validation conditions.
+
+	// SecretsValid indicates whether required secrets (pull secret, SSH key) are valid.
+	SecretsValid string = "SecretsValid"
+
+	// BlueFieldImageResolved indicates whether the BlueField container image was successfully resolved.
+	BlueFieldImageResolved string = "BlueFieldImageResolved"
+
+	// DPUClusterMissing indicates whether the referenced DPUCluster exists.
+	DPUClusterMissing string = "DPUClusterMissing"
+
+	// ClusterTypeValid indicates whether the DPUCluster type is supported.
+	ClusterTypeValid string = "ClusterTypeValid"
+
+	// DPUClusterInUse indicates whether the DPUCluster is already in use by another DPFHCPBridge.
+	DPUClusterInUse string = "DPUClusterInUse"
 )
 
 // DPFHCPBridgeStatus defines the observed state of DPFHCPBridge

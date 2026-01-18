@@ -34,9 +34,6 @@ import (
 )
 
 const (
-	// SecretsValidConditionType is the condition type for secrets validation
-	SecretsValidConditionType = "SecretsValid"
-
 	// Event reasons
 	ReasonSecretsValid        = "SecretsValid"
 	ReasonSSHKeySecretMissing = "SSHKeySecretMissing"
@@ -129,14 +126,14 @@ func (v *Validator) handleSSHKeySecretMissing(ctx context.Context, cr *provision
 	log := logf.FromContext(ctx).WithValues("feature", "secrets-validation")
 
 	// Get previous condition
-	previousCondition := meta.FindStatusCondition(cr.Status.Conditions, SecretsValidConditionType)
+	previousCondition := meta.FindStatusCondition(cr.Status.Conditions, provisioningv1alpha1.SecretsValid)
 
 	message := fmt.Sprintf("SSH key secret '%s' not found in namespace '%s'",
 		cr.Spec.SSHKeySecretRef.Name, cr.Namespace)
 
 	// Set condition
 	condition := metav1.Condition{
-		Type:               SecretsValidConditionType,
+		Type:               provisioningv1alpha1.SecretsValid,
 		Status:             metav1.ConditionFalse,
 		Reason:             ReasonSSHKeySecretMissing,
 		Message:            message,
@@ -168,14 +165,14 @@ func (v *Validator) handleSSHKeySecretInvalid(ctx context.Context, cr *provision
 	log := logf.FromContext(ctx).WithValues("feature", "secrets-validation")
 
 	// Get previous condition
-	previousCondition := meta.FindStatusCondition(cr.Status.Conditions, SecretsValidConditionType)
+	previousCondition := meta.FindStatusCondition(cr.Status.Conditions, provisioningv1alpha1.SecretsValid)
 
 	message := fmt.Sprintf("SSH key secret '%s' is missing required key '%s'",
 		cr.Spec.SSHKeySecretRef.Name, SSHPublicKeySecretKey)
 
 	// Set condition
 	condition := metav1.Condition{
-		Type:               SecretsValidConditionType,
+		Type:               provisioningv1alpha1.SecretsValid,
 		Status:             metav1.ConditionFalse,
 		Reason:             ReasonSSHKeySecretInvalid,
 		Message:            message,
@@ -207,14 +204,14 @@ func (v *Validator) handlePullSecretMissing(ctx context.Context, cr *provisionin
 	log := logf.FromContext(ctx).WithValues("feature", "secrets-validation")
 
 	// Get previous condition
-	previousCondition := meta.FindStatusCondition(cr.Status.Conditions, SecretsValidConditionType)
+	previousCondition := meta.FindStatusCondition(cr.Status.Conditions, provisioningv1alpha1.SecretsValid)
 
 	message := fmt.Sprintf("Pull secret '%s' not found in namespace '%s'",
 		cr.Spec.PullSecretRef.Name, cr.Namespace)
 
 	// Set condition
 	condition := metav1.Condition{
-		Type:               SecretsValidConditionType,
+		Type:               provisioningv1alpha1.SecretsValid,
 		Status:             metav1.ConditionFalse,
 		Reason:             ReasonPullSecretMissing,
 		Message:            message,
@@ -246,14 +243,14 @@ func (v *Validator) handlePullSecretInvalid(ctx context.Context, cr *provisionin
 	log := logf.FromContext(ctx).WithValues("feature", "secrets-validation")
 
 	// Get previous condition
-	previousCondition := meta.FindStatusCondition(cr.Status.Conditions, SecretsValidConditionType)
+	previousCondition := meta.FindStatusCondition(cr.Status.Conditions, provisioningv1alpha1.SecretsValid)
 
 	message := fmt.Sprintf("Pull secret '%s' is missing required key '%s'",
 		cr.Spec.PullSecretRef.Name, PullSecretKey)
 
 	// Set condition
 	condition := metav1.Condition{
-		Type:               SecretsValidConditionType,
+		Type:               provisioningv1alpha1.SecretsValid,
 		Status:             metav1.ConditionFalse,
 		Reason:             ReasonPullSecretInvalid,
 		Message:            message,
@@ -285,14 +282,14 @@ func (v *Validator) handleSecretsAccessDenied(ctx context.Context, cr *provision
 	log := logf.FromContext(ctx).WithValues("feature", "secrets-validation")
 
 	// Get previous condition
-	previousCondition := meta.FindStatusCondition(cr.Status.Conditions, SecretsValidConditionType)
+	previousCondition := meta.FindStatusCondition(cr.Status.Conditions, provisioningv1alpha1.SecretsValid)
 
 	message := fmt.Sprintf("Operator lacks RBAC permissions to access %s in namespace '%s': %v",
 		secretType, cr.Namespace, err)
 
 	// Set condition
 	condition := metav1.Condition{
-		Type:               SecretsValidConditionType,
+		Type:               provisioningv1alpha1.SecretsValid,
 		Status:             metav1.ConditionFalse,
 		Reason:             ReasonSecretsAccessDenied,
 		Message:            message,
@@ -324,7 +321,7 @@ func (v *Validator) handleSecretsValid(ctx context.Context, cr *provisioningv1al
 	log := logf.FromContext(ctx).WithValues("feature", "secrets-validation")
 
 	// Get previous condition to check for recovery
-	previousCondition := meta.FindStatusCondition(cr.Status.Conditions, SecretsValidConditionType)
+	previousCondition := meta.FindStatusCondition(cr.Status.Conditions, provisioningv1alpha1.SecretsValid)
 
 	// Check for recovery
 	if previousCondition != nil && previousCondition.Status == metav1.ConditionFalse {
@@ -337,7 +334,7 @@ func (v *Validator) handleSecretsValid(ctx context.Context, cr *provisioningv1al
 
 	// Set condition
 	condition := metav1.Condition{
-		Type:               SecretsValidConditionType,
+		Type:               provisioningv1alpha1.SecretsValid,
 		Status:             metav1.ConditionTrue,
 		Reason:             ReasonSecretsValid,
 		Message:            message,

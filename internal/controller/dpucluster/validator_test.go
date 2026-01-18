@@ -104,7 +104,7 @@ var _ = Describe("DPUCluster Validator", func() {
 				Expect(fakeClient.Get(ctx, client.ObjectKeyFromObject(bridge), &updatedBridge)).To(Succeed())
 
 				// Verify condition
-				condition := meta.FindStatusCondition(updatedBridge.Status.Conditions, DPUClusterMissingConditionType)
+				condition := meta.FindStatusCondition(updatedBridge.Status.Conditions, provisioningv1alpha1.DPUClusterMissing)
 				Expect(condition).ToNot(BeNil())
 				Expect(condition.Status).To(Equal(metav1.ConditionFalse))
 				Expect(condition.Reason).To(Equal(ReasonDPUClusterFound))
@@ -195,7 +195,7 @@ var _ = Describe("DPUCluster Validator", func() {
 				Expect(fakeClient.Get(ctx, client.ObjectKeyFromObject(bridge), &updatedBridge)).To(Succeed())
 
 				// Verify condition
-				condition := meta.FindStatusCondition(updatedBridge.Status.Conditions, DPUClusterMissingConditionType)
+				condition := meta.FindStatusCondition(updatedBridge.Status.Conditions, provisioningv1alpha1.DPUClusterMissing)
 				Expect(condition).ToNot(BeNil())
 				Expect(condition.Status).To(Equal(metav1.ConditionTrue))
 				Expect(condition.Reason).To(Equal(ReasonDPUClusterNotFound))
@@ -224,7 +224,7 @@ var _ = Describe("DPUCluster Validator", func() {
 						// Simulate previous successful validation
 						Conditions: []metav1.Condition{
 							{
-								Type:               DPUClusterMissingConditionType,
+								Type:               provisioningv1alpha1.DPUClusterMissing,
 								Status:             metav1.ConditionFalse,
 								Reason:             ReasonDPUClusterFound,
 								LastTransitionTime: metav1.Now(),
@@ -251,7 +251,7 @@ var _ = Describe("DPUCluster Validator", func() {
 				Expect(fakeClient.Get(ctx, client.ObjectKeyFromObject(bridge), &updatedBridge)).To(Succeed())
 
 				// Verify condition uses "Deleted" reason
-				condition := meta.FindStatusCondition(updatedBridge.Status.Conditions, DPUClusterMissingConditionType)
+				condition := meta.FindStatusCondition(updatedBridge.Status.Conditions, provisioningv1alpha1.DPUClusterMissing)
 				Expect(condition).ToNot(BeNil())
 				Expect(condition.Status).To(Equal(metav1.ConditionTrue))
 				Expect(condition.Reason).To(Equal(ReasonDPUClusterDeleted))
@@ -391,7 +391,7 @@ var _ = Describe("DPUCluster Validator", func() {
 						Phase: provisioningv1alpha1.PhaseReady,
 						Conditions: []metav1.Condition{
 							{
-								Type:   DPUClusterMissingConditionType,
+								Type:   provisioningv1alpha1.DPUClusterMissing,
 								Status: metav1.ConditionFalse,
 								Reason: ReasonDPUClusterFound,
 							},
@@ -415,7 +415,7 @@ var _ = Describe("DPUCluster Validator", func() {
 				var updatedBridge provisioningv1alpha1.DPFHCPBridge
 				Expect(fakeClient.Get(ctx, client.ObjectKeyFromObject(bridge), &updatedBridge)).To(Succeed())
 
-				condition := meta.FindStatusCondition(updatedBridge.Status.Conditions, DPUClusterMissingConditionType)
+				condition := meta.FindStatusCondition(updatedBridge.Status.Conditions, provisioningv1alpha1.DPUClusterMissing)
 				Expect(condition.Reason).To(Equal(ReasonDPUClusterDeleted))
 			})
 		})
@@ -465,7 +465,7 @@ var _ = Describe("DPUCluster Validator", func() {
 				var updatedBridge provisioningv1alpha1.DPFHCPBridge
 				Expect(fakeClient.Get(ctx, client.ObjectKeyFromObject(bridge), &updatedBridge)).To(Succeed())
 
-				condition := meta.FindStatusCondition(updatedBridge.Status.Conditions, ClusterTypeValidConditionType)
+				condition := meta.FindStatusCondition(updatedBridge.Status.Conditions, provisioningv1alpha1.ClusterTypeValid)
 				Expect(condition).ToNot(BeNil())
 				Expect(condition.Status).To(Equal(metav1.ConditionTrue))
 				Expect(condition.Reason).To(Equal(ReasonClusterTypeValid))
@@ -517,7 +517,7 @@ var _ = Describe("DPUCluster Validator", func() {
 				var updatedBridge provisioningv1alpha1.DPFHCPBridge
 				Expect(fakeClient.Get(ctx, client.ObjectKeyFromObject(bridge), &updatedBridge)).To(Succeed())
 
-				condition := meta.FindStatusCondition(updatedBridge.Status.Conditions, ClusterTypeValidConditionType)
+				condition := meta.FindStatusCondition(updatedBridge.Status.Conditions, provisioningv1alpha1.ClusterTypeValid)
 				Expect(condition).ToNot(BeNil())
 				Expect(condition.Status).To(Equal(metav1.ConditionFalse))
 				Expect(condition.Reason).To(Equal(ReasonClusterTypeUnsupported))
@@ -557,7 +557,7 @@ var _ = Describe("DPUCluster Validator", func() {
 						Phase: provisioningv1alpha1.PhaseFailed,
 						Conditions: []metav1.Condition{
 							{
-								Type:               ClusterTypeValidConditionType,
+								Type:               provisioningv1alpha1.ClusterTypeValid,
 								Status:             metav1.ConditionFalse, // Was False before
 								Reason:             ReasonClusterTypeUnsupported,
 								Message:            "ClusterType unsupported",
@@ -585,7 +585,7 @@ var _ = Describe("DPUCluster Validator", func() {
 				var updatedBridge provisioningv1alpha1.DPFHCPBridge
 				Expect(fakeClient.Get(ctx, client.ObjectKeyFromObject(bridge), &updatedBridge)).To(Succeed())
 
-				condition := meta.FindStatusCondition(updatedBridge.Status.Conditions, ClusterTypeValidConditionType)
+				condition := meta.FindStatusCondition(updatedBridge.Status.Conditions, provisioningv1alpha1.ClusterTypeValid)
 				Expect(condition).ToNot(BeNil())
 				Expect(condition.Status).To(Equal(metav1.ConditionTrue))
 				Expect(condition.Reason).To(Equal(ReasonClusterTypeValid))
@@ -640,7 +640,7 @@ var _ = Describe("DPUCluster Validator", func() {
 				var updatedBridge provisioningv1alpha1.DPFHCPBridge
 				Expect(fakeClient.Get(ctx, client.ObjectKeyFromObject(bridge), &updatedBridge)).To(Succeed())
 
-				condition := meta.FindStatusCondition(updatedBridge.Status.Conditions, DPUClusterInUseConditionType)
+				condition := meta.FindStatusCondition(updatedBridge.Status.Conditions, provisioningv1alpha1.DPUClusterInUse)
 				Expect(condition).ToNot(BeNil())
 				Expect(condition.Status).To(Equal(metav1.ConditionFalse))
 				Expect(condition.Reason).To(Equal(ReasonDPUClusterAvailable))
@@ -711,7 +711,7 @@ var _ = Describe("DPUCluster Validator", func() {
 				var updatedBridge provisioningv1alpha1.DPFHCPBridge
 				Expect(fakeClient.Get(ctx, client.ObjectKeyFromObject(secondBridge), &updatedBridge)).To(Succeed())
 
-				condition := meta.FindStatusCondition(updatedBridge.Status.Conditions, DPUClusterInUseConditionType)
+				condition := meta.FindStatusCondition(updatedBridge.Status.Conditions, provisioningv1alpha1.DPUClusterInUse)
 				Expect(condition).ToNot(BeNil())
 				Expect(condition.Status).To(Equal(metav1.ConditionTrue))
 				Expect(condition.Reason).To(Equal(ReasonDPUClusterInUse))
@@ -768,7 +768,7 @@ var _ = Describe("DPUCluster Validator", func() {
 				Expect(fakeClient.Get(ctx, client.ObjectKeyFromObject(bridge), &updatedBridge)).To(Succeed())
 
 				// Verify first validation succeeded
-				condition := meta.FindStatusCondition(updatedBridge.Status.Conditions, DPUClusterInUseConditionType)
+				condition := meta.FindStatusCondition(updatedBridge.Status.Conditions, provisioningv1alpha1.DPUClusterInUse)
 				Expect(condition.Status).To(Equal(metav1.ConditionFalse))
 
 				// Second validation of same bridge - should still succeed (skips itself)
@@ -778,7 +778,7 @@ var _ = Describe("DPUCluster Validator", func() {
 
 				// Verify still available
 				Expect(fakeClient.Get(ctx, client.ObjectKeyFromObject(bridge), &updatedBridge)).To(Succeed())
-				condition = meta.FindStatusCondition(updatedBridge.Status.Conditions, DPUClusterInUseConditionType)
+				condition = meta.FindStatusCondition(updatedBridge.Status.Conditions, provisioningv1alpha1.DPUClusterInUse)
 				Expect(condition.Status).To(Equal(metav1.ConditionFalse))
 			})
 
@@ -811,7 +811,7 @@ var _ = Describe("DPUCluster Validator", func() {
 						Phase: provisioningv1alpha1.PhaseFailed,
 						Conditions: []metav1.Condition{
 							{
-								Type:               DPUClusterInUseConditionType,
+								Type:               provisioningv1alpha1.DPUClusterInUse,
 								Status:             metav1.ConditionTrue, // Was True before
 								Reason:             ReasonDPUClusterInUse,
 								Message:            "DPUCluster in use by another bridge",
@@ -840,7 +840,7 @@ var _ = Describe("DPUCluster Validator", func() {
 				var updatedBridge provisioningv1alpha1.DPFHCPBridge
 				Expect(fakeClient.Get(ctx, client.ObjectKeyFromObject(bridge), &updatedBridge)).To(Succeed())
 
-				condition := meta.FindStatusCondition(updatedBridge.Status.Conditions, DPUClusterInUseConditionType)
+				condition := meta.FindStatusCondition(updatedBridge.Status.Conditions, provisioningv1alpha1.DPUClusterInUse)
 				Expect(condition).ToNot(BeNil())
 				Expect(condition.Status).To(Equal(metav1.ConditionFalse))
 				Expect(condition.Reason).To(Equal(ReasonDPUClusterAvailable))
@@ -911,7 +911,7 @@ var _ = Describe("DPUCluster Validator", func() {
 				var updatedBridge provisioningv1alpha1.DPFHCPBridge
 				Expect(fakeClient.Get(ctx, client.ObjectKeyFromObject(secondBridge), &updatedBridge)).To(Succeed())
 
-				condition := meta.FindStatusCondition(updatedBridge.Status.Conditions, DPUClusterInUseConditionType)
+				condition := meta.FindStatusCondition(updatedBridge.Status.Conditions, provisioningv1alpha1.DPUClusterInUse)
 				Expect(condition).ToNot(BeNil())
 				Expect(condition.Status).To(Equal(metav1.ConditionTrue))
 				Expect(condition.Message).To(ContainSubstring("ns1/bridge"))

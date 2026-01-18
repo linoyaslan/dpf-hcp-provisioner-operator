@@ -35,15 +35,6 @@ import (
 )
 
 const (
-	// DPUClusterMissingConditionType is the condition type for DPUCluster validation
-	DPUClusterMissingConditionType = "DPUClusterMissing"
-
-	// ClusterTypeValidConditionType is the condition type for cluster type validation
-	ClusterTypeValidConditionType = "ClusterTypeValid"
-
-	// DPUClusterInUseConditionType is the condition type for DPUCluster exclusivity validation
-	DPUClusterInUseConditionType = "DPUClusterInUse"
-
 	// Event reasons
 	ReasonDPUClusterFound        = "DPUClusterFound"
 	ReasonDPUClusterNotFound     = "DPUClusterNotFound"
@@ -140,7 +131,7 @@ func (v *Validator) handleClusterTypeInvalid(ctx context.Context, cr *provisioni
 	log := logf.FromContext(ctx).WithValues("feature", "dpucluster-validation")
 
 	// Get previous condition
-	previousCondition := meta.FindStatusCondition(cr.Status.Conditions, ClusterTypeValidConditionType)
+	previousCondition := meta.FindStatusCondition(cr.Status.Conditions, provisioningv1alpha1.ClusterTypeValid)
 
 	// Note: Phase will be computed from conditions by the reconciler
 
@@ -149,7 +140,7 @@ func (v *Validator) handleClusterTypeInvalid(ctx context.Context, cr *provisioni
 
 	// Set condition
 	condition := metav1.Condition{
-		Type:               ClusterTypeValidConditionType,
+		Type:               provisioningv1alpha1.ClusterTypeValid,
 		Status:             metav1.ConditionFalse,
 		Reason:             ReasonClusterTypeUnsupported,
 		Message:            message,
@@ -180,7 +171,7 @@ func (v *Validator) handleClusterTypeValid(ctx context.Context, cr *provisioning
 	log := logf.FromContext(ctx).WithValues("feature", "dpucluster-validation")
 
 	// Get previous condition to check for recovery
-	previousCondition := meta.FindStatusCondition(cr.Status.Conditions, ClusterTypeValidConditionType)
+	previousCondition := meta.FindStatusCondition(cr.Status.Conditions, provisioningv1alpha1.ClusterTypeValid)
 
 	// Note: Phase will be computed from conditions by the reconciler
 	if previousCondition != nil && previousCondition.Status == metav1.ConditionFalse {
@@ -191,7 +182,7 @@ func (v *Validator) handleClusterTypeValid(ctx context.Context, cr *provisioning
 
 	// Set condition
 	condition := metav1.Condition{
-		Type:               ClusterTypeValidConditionType,
+		Type:               provisioningv1alpha1.ClusterTypeValid,
 		Status:             metav1.ConditionTrue,
 		Reason:             ReasonClusterTypeValid,
 		Message:            message,
@@ -257,7 +248,7 @@ func (v *Validator) handleDPUClusterInUse(ctx context.Context, cr *provisioningv
 	log := logf.FromContext(ctx).WithValues("feature", "dpucluster-exclusivity")
 
 	// Get previous condition
-	previousCondition := meta.FindStatusCondition(cr.Status.Conditions, DPUClusterInUseConditionType)
+	previousCondition := meta.FindStatusCondition(cr.Status.Conditions, provisioningv1alpha1.DPUClusterInUse)
 
 	message := fmt.Sprintf("DPUCluster '%s/%s' is already in use by DPFHCPBridge '%s/%s'. Each DPUCluster can only be referenced by one DPFHCPBridge",
 		dpuCluster.Namespace, dpuCluster.Name,
@@ -265,7 +256,7 @@ func (v *Validator) handleDPUClusterInUse(ctx context.Context, cr *provisioningv
 
 	// Set condition
 	condition := metav1.Condition{
-		Type:               DPUClusterInUseConditionType,
+		Type:               provisioningv1alpha1.DPUClusterInUse,
 		Status:             metav1.ConditionTrue,
 		Reason:             ReasonDPUClusterInUse,
 		Message:            message,
@@ -298,7 +289,7 @@ func (v *Validator) handleDPUClusterAvailable(ctx context.Context, cr *provision
 	log := logf.FromContext(ctx).WithValues("feature", "dpucluster-exclusivity")
 
 	// Get previous condition to check for recovery
-	previousCondition := meta.FindStatusCondition(cr.Status.Conditions, DPUClusterInUseConditionType)
+	previousCondition := meta.FindStatusCondition(cr.Status.Conditions, provisioningv1alpha1.DPUClusterInUse)
 
 	if previousCondition != nil && previousCondition.Status == metav1.ConditionTrue {
 		log.Info("DPUCluster recovered from in-use state")
@@ -309,7 +300,7 @@ func (v *Validator) handleDPUClusterAvailable(ctx context.Context, cr *provision
 
 	// Set condition
 	condition := metav1.Condition{
-		Type:               DPUClusterInUseConditionType,
+		Type:               provisioningv1alpha1.DPUClusterInUse,
 		Status:             metav1.ConditionFalse,
 		Reason:             ReasonDPUClusterAvailable,
 		Message:            message,
@@ -341,7 +332,7 @@ func (v *Validator) handleDPUClusterMissing(ctx context.Context, cr *provisionin
 	log := logf.FromContext(ctx).WithValues("feature", "dpucluster-validation")
 
 	// Get previous condition to determine if this is a new error
-	previousCondition := meta.FindStatusCondition(cr.Status.Conditions, DPUClusterMissingConditionType)
+	previousCondition := meta.FindStatusCondition(cr.Status.Conditions, provisioningv1alpha1.DPUClusterMissing)
 
 	// Determine message based on whether cluster was previously found
 	var message string
@@ -360,7 +351,7 @@ func (v *Validator) handleDPUClusterMissing(ctx context.Context, cr *provisionin
 
 	// Set condition
 	condition := metav1.Condition{
-		Type:               DPUClusterMissingConditionType,
+		Type:               provisioningv1alpha1.DPUClusterMissing,
 		Status:             metav1.ConditionTrue,
 		Reason:             reason,
 		Message:            message,
@@ -394,14 +385,14 @@ func (v *Validator) handleDPUClusterAccessDenied(ctx context.Context, cr *provis
 	log := logf.FromContext(ctx).WithValues("feature", "dpucluster-validation")
 
 	// Get previous condition
-	previousCondition := meta.FindStatusCondition(cr.Status.Conditions, DPUClusterMissingConditionType)
+	previousCondition := meta.FindStatusCondition(cr.Status.Conditions, provisioningv1alpha1.DPUClusterMissing)
 
 	message := fmt.Sprintf("Operator lacks RBAC permissions to access DPUCluster '%s' in namespace '%s': %v",
 		dpuClusterRef.Name, dpuClusterRef.Namespace, err)
 
 	// Set condition
 	condition := metav1.Condition{
-		Type:               DPUClusterMissingConditionType,
+		Type:               provisioningv1alpha1.DPUClusterMissing,
 		Status:             metav1.ConditionTrue,
 		Reason:             ReasonDPUClusterAccessDenied,
 		Message:            message,
@@ -433,7 +424,7 @@ func (v *Validator) handleDPUClusterFound(ctx context.Context, cr *provisioningv
 	log := logf.FromContext(ctx).WithValues("feature", "dpucluster-validation")
 
 	// Get previous condition
-	previousCondition := meta.FindStatusCondition(cr.Status.Conditions, DPUClusterMissingConditionType)
+	previousCondition := meta.FindStatusCondition(cr.Status.Conditions, provisioningv1alpha1.DPUClusterMissing)
 
 	if previousCondition != nil && previousCondition.Status == metav1.ConditionTrue {
 		log.Info("DPUCluster recovered from missing state")
@@ -444,7 +435,7 @@ func (v *Validator) handleDPUClusterFound(ctx context.Context, cr *provisioningv
 
 	// Set condition
 	condition := metav1.Condition{
-		Type:               DPUClusterMissingConditionType,
+		Type:               provisioningv1alpha1.DPUClusterMissing,
 		Status:             metav1.ConditionFalse,
 		Reason:             ReasonDPUClusterFound,
 		Message:            message,
