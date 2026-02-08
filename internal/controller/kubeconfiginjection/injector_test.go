@@ -78,14 +78,14 @@ var _ = Describe("Kubeconfig Injection Reconciler", func() {
 				},
 			}
 
-			// HC kubeconfig secret exists
+			// HC kubeconfig secret exists (created by Hypershift with "kubeconfig" key)
 			hcSecret := &corev1.Secret{
 				ObjectMeta: metav1.ObjectMeta{
 					Name:      "test-bridge-admin-kubeconfig",
 					Namespace: "test-ns",
 				},
 				Data: map[string][]byte{
-					"kubeconfig": []byte("fake-kubeconfig-data"),
+					SourceKubeconfigSecretKey: []byte("fake-kubeconfig-data"),
 				},
 			}
 
@@ -130,7 +130,8 @@ var _ = Describe("Kubeconfig Injection Reconciler", func() {
 				Namespace: "dpu-ns",
 			}, destSecret)
 			Expect(err).NotTo(HaveOccurred())
-			Expect(destSecret.Data["kubeconfig"]).To(Equal([]byte("fake-kubeconfig-data")))
+			// Destination secret should have "super-admin.conf" key (DPF operator expects this)
+			Expect(destSecret.Data[DestinationKubeconfigSecretKey]).To(Equal([]byte("fake-kubeconfig-data")))
 			Expect(destSecret.Labels[LabelOwnedBy]).To(Equal("test-bridge"))
 			Expect(destSecret.Labels[LabelNamespace]).To(Equal("test-ns"))
 
@@ -247,7 +248,7 @@ var _ = Describe("Kubeconfig Injection Reconciler", func() {
 					Namespace: "test-ns",
 				},
 				Data: map[string][]byte{
-					"kubeconfig": []byte("new-rotated-kubeconfig-data"),
+					SourceKubeconfigSecretKey: []byte("new-rotated-kubeconfig-data"),
 				},
 			}
 
@@ -257,7 +258,7 @@ var _ = Describe("Kubeconfig Injection Reconciler", func() {
 					Namespace: "dpu-ns",
 				},
 				Data: map[string][]byte{
-					"kubeconfig": []byte("old-kubeconfig-data"), // DRIFT!
+					DestinationKubeconfigSecretKey: []byte("old-kubeconfig-data"), // DRIFT!
 				},
 			}
 
@@ -292,7 +293,7 @@ var _ = Describe("Kubeconfig Injection Reconciler", func() {
 				Namespace: "dpu-ns",
 			}, beforeSecret)
 			Expect(err).NotTo(HaveOccurred())
-			Expect(beforeSecret.Data["kubeconfig"]).To(Equal([]byte("old-kubeconfig-data")))
+			Expect(beforeSecret.Data[DestinationKubeconfigSecretKey]).To(Equal([]byte("old-kubeconfig-data")))
 
 			// When: Reconciliation runs
 			result, err := injector.InjectKubeconfig(ctx, bridge)
@@ -311,7 +312,7 @@ var _ = Describe("Kubeconfig Injection Reconciler", func() {
 				Namespace: "dpu-ns",
 			}, updatedSecret)
 			Expect(err).NotTo(HaveOccurred())
-			Expect(updatedSecret.Data["kubeconfig"]).To(Equal([]byte("new-rotated-kubeconfig-data")))
+			Expect(updatedSecret.Data[DestinationKubeconfigSecretKey]).To(Equal([]byte("new-rotated-kubeconfig-data")))
 
 			// Condition remains True (stayed healthy through drift correction)
 			afterCond := findCondition(bridge.Status.Conditions, provisioningv1alpha1.KubeConfigInjected)
@@ -356,7 +357,7 @@ var _ = Describe("Kubeconfig Injection Reconciler", func() {
 					Namespace: "test-ns",
 				},
 				Data: map[string][]byte{
-					"kubeconfig": []byte("kubeconfig-data"),
+					SourceKubeconfigSecretKey: []byte("kubeconfig-data"),
 				},
 			}
 
@@ -366,7 +367,7 @@ var _ = Describe("Kubeconfig Injection Reconciler", func() {
 					Namespace: "dpu-ns",
 				},
 				Data: map[string][]byte{
-					"kubeconfig": []byte("kubeconfig-data"),
+					DestinationKubeconfigSecretKey: []byte("kubeconfig-data"),
 				},
 			}
 
@@ -486,7 +487,7 @@ var _ = Describe("Kubeconfig Injection Reconciler", func() {
 					Namespace: "test-ns",
 				},
 				Data: map[string][]byte{
-					"kubeconfig": []byte("kubeconfig-data"),
+					SourceKubeconfigSecretKey: []byte("kubeconfig-data"),
 				},
 			}
 
@@ -541,14 +542,14 @@ var _ = Describe("Kubeconfig Injection Reconciler", func() {
 			Expect(err).NotTo(HaveOccurred())
 			Expect(result.Requeue).To(BeFalse())
 
-			// Secret SHOULD be recreated
+			// Secret SHOULD be recreated with "super-admin.conf" key
 			recreatedSecret := &corev1.Secret{}
 			err = fakeClient.Get(ctx, types.NamespacedName{
 				Name:      "test-bridge-admin-kubeconfig",
 				Namespace: "dpu-ns",
 			}, recreatedSecret)
 			Expect(err).NotTo(HaveOccurred(), "Secret should be recreated")
-			Expect(recreatedSecret.Data["kubeconfig"]).To(Equal([]byte("kubeconfig-data")))
+			Expect(recreatedSecret.Data[DestinationKubeconfigSecretKey]).To(Equal([]byte("kubeconfig-data")))
 			Expect(recreatedSecret.Labels[LabelOwnedBy]).To(Equal("test-bridge"))
 			Expect(recreatedSecret.Labels[LabelNamespace]).To(Equal("test-ns"))
 

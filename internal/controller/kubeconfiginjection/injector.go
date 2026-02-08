@@ -40,6 +40,12 @@ const (
 	// KubeconfigSecretSuffix is the suffix for HC admin kubeconfig secrets
 	KubeconfigSecretSuffix = "-admin-kubeconfig"
 
+	// SourceKubeconfigSecretKey is the key name in the HostedCluster kubeconfig secret (created by Hypershift)
+	SourceKubeconfigSecretKey = "kubeconfig"
+
+	// DestinationKubeconfigSecretKey is the key name for kubeconfig data in the destination secret (expected by DPF operator)
+	DestinationKubeconfigSecretKey = "super-admin.conf"
+
 	// LabelOwnedBy is the label key for ownership tracking
 	LabelOwnedBy = "dpf-hcp-bridge-operator/owned-by"
 
@@ -364,14 +370,15 @@ func (ki *KubeconfigInjector) checkDrift(ctx context.Context, bridge *provisioni
 	}
 
 	// Compare kubeconfig data
-	sourceData, sourceOk := sourceSecret.Data["kubeconfig"]
-	destData, destOk := destSecret.Data["kubeconfig"]
+	// Source secret (from HC) uses "kubeconfig" key, destination uses "super-admin.conf"
+	sourceData, sourceOk := sourceSecret.Data[SourceKubeconfigSecretKey]
+	destData, destOk := destSecret.Data[DestinationKubeconfigSecretKey]
 
 	if !sourceOk {
-		return false, fmt.Errorf("source secret missing 'kubeconfig' key")
+		return false, fmt.Errorf("source secret missing '%s' key", SourceKubeconfigSecretKey)
 	}
 	if !destOk {
-		return false, fmt.Errorf("destination secret missing 'kubeconfig' key")
+		return false, fmt.Errorf("destination secret missing '%s' key", DestinationKubeconfigSecretKey)
 	}
 
 	hasDrift := !bytes.Equal(sourceData, destData)
@@ -398,13 +405,14 @@ func (ki *KubeconfigInjector) createOrUpdateKubeconfigSecret(ctx context.Context
 		return fmt.Errorf("failed to read source kubeconfig secret: %w", err)
 	}
 
-	// Extract kubeconfig data
-	kubeconfigData, ok := sourceSecret.Data["kubeconfig"]
+	// Extract kubeconfig data from source secret (HC namespace)
+	// Source secret uses "kubeconfig" key (created by Hypershift)
+	kubeconfigData, ok := sourceSecret.Data[SourceKubeconfigSecretKey]
 	if !ok {
-		return fmt.Errorf("source secret missing 'kubeconfig' key")
+		return fmt.Errorf("source secret missing '%s' key", SourceKubeconfigSecretKey)
 	}
 
-	// Create destination secret
+	// Create destination secret with "super-admin.conf" key (expected by DPF operator)
 	destSecret := &corev1.Secret{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      sourceSecretName,
@@ -416,7 +424,7 @@ func (ki *KubeconfigInjector) createOrUpdateKubeconfigSecret(ctx context.Context
 		},
 		Type: corev1.SecretTypeOpaque,
 		Data: map[string][]byte{
-			"kubeconfig": kubeconfigData,
+			DestinationKubeconfigSecretKey: kubeconfigData,
 		},
 	}
 
