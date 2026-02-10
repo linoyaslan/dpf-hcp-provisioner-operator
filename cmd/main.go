@@ -55,6 +55,7 @@ var (
 	setupLog = ctrl.Log.WithName("setup")
 )
 
+// test
 func init() {
 	utilruntime.Must(clientgoscheme.AddToScheme(scheme))
 
